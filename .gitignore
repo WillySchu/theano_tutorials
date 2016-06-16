@@ -1,2 +1,4 @@
 venv
 DeepLearningTurorials
+.DS_Store
+data
