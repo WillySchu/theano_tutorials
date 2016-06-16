@@ -88,7 +88,7 @@ def test_mlp(
     learning_rate=0.01,
     L1_reg=0.0,
     L2_reg=0.0001,
-    n_epochs=10000,
+    n_epochs=1000,
     dataset='mnist.pkl.gz',
     batch_size=20,
     n_hidden=500):
