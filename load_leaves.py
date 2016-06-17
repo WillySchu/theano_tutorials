@@ -44,10 +44,14 @@ def load():
                 img = Image.open(path + '/' + file).convert('L')
                 img = img.crop((150, 150, img.size[0] - 150, img.size[1] - 150))
                 img = img.resize(STANDARD_SIZE)
+                img2 = img.transpose(Image.FLIP_LEFT_RIGHT)
+                img2 = list(img2.getdata())
                 img = list(img.getdata())
                 # img = map(list, img)
                 img = numpy.array(img)
+                img2 = numpy.array(img2)
                 images.append((img, tag))
+                images.append((img2, tag))
 
         return images
 

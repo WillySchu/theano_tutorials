@@ -57,7 +57,7 @@ class ConvPoolLayer(object):
         self.input = input
 
 def train(learning_rate=0.01,
-    n_epochs=5,
+    n_epochs=10,
     dataset='mnist.pkl.gz',
     nkerns=[20, 50],
     batch_size=10,
