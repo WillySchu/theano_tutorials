@@ -13,7 +13,7 @@ import numpy
 
 from logReg2 import LogReg, load_data
 from single_layer_MLP import HiddenLayer
-from load_leaves import load
+from load_leaves import load, load_diff
 
 class ConvPoolLayer(object):
     def __init__(self, rng, input, filter_shape, image_shape, poolsize=(2, 2)):
@@ -57,11 +57,13 @@ class ConvPoolLayer(object):
         self.input = input
 
 def train(learning_rate=0.01,
-    n_epochs=10,
+    n_epochs=5,
     dataset='mnist.pkl.gz',
     nkerns=[20, 50],
-    batch_size=20,
-    image_size=128):
+    batch_size=10,
+    image_size=128,
+    L1_reg = 0.0,
+    L2_reg = 0.001):
 
     datasets = load()
 
@@ -111,17 +113,34 @@ def train(learning_rate=0.01,
         rng,
         input=layer2_input,
         n_in=nkerns[1] * image_size_2 * image_size_2,
-        n_out=1000,
+        n_out=500,
         activation=T.tanh
     )
 
     layer3 = LogReg(
         input=layer2.output,
-        n_in=1000,
+        n_in=500,
         n_out=3
     )
 
-    cost = layer3.negative_log_likelihood(y)
+    L1 = (
+        abs(layer0.W).sum()
+        + abs(layer1.W).sum()
+        + abs(layer2.W).sum()
+        + abs(layer3.W).sum()
+    )
+
+    L2 = (
+        abs(layer0.W).sum()
+        + (layer1.W ** 2).sum()
+        + (layer2.W ** 2).sum()
+        + (layer3.W ** 2).sum()
+    )
+
+    cost = (layer3.negative_log_likelihood(y)
+        + L1_reg * L1
+        + L2_reg * L2
+    )
 
     test_model = theano.function(
         [index],
@@ -164,7 +183,7 @@ def train(learning_rate=0.01,
 
     print('... training')
 
-    patience = 1000
+    patience = 10000
     patience_increase = 2
     improvement_threshold = 0.995
     validation_frequency = min(n_train_batches, patience // 2)
@@ -172,6 +191,7 @@ def train(learning_rate=0.01,
     best_iter = 0
     test_score = 0
     start_time = timeit.default_timer()
+
 
     epoch = 0
     done_looping = False
@@ -181,6 +201,7 @@ def train(learning_rate=0.01,
         for minibatch_index in range(n_train_batches):
 
             minibatch_avg_cost = train_model(minibatch_index)
+            print(minibatch_avg_cost)
             iter = (epoch - 1) * n_train_batches + minibatch_index
 
             if (iter + 1) % validation_frequency == 0:
