@@ -21,7 +21,7 @@ def load():
         # 'test2',
         # 'test3'
     ]
-    STANDARD_SIZE = (56, 56)
+    STANDARD_SIZE = (28, 28)
 
     def load_leaf_train(species, tag):
         path = os.path.join(

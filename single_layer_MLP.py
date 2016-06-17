@@ -6,7 +6,6 @@ import timeit
 
 import theano
 import theano.tensor as T
-from theano import pp
 
 import numpy
 
@@ -101,8 +100,8 @@ def test_mlp(
     test_set_x, test_set_y = datasets[2]
 
     n_train_batches = train_set_x.get_value(borrow=True).shape[0] // batch_size
+    print(n_train_batches)
     n_valid_batches = valid_set_x.get_value(borrow=True).shape[0] // batch_size
-    print(n_valid_batches)
     n_test_batches = test_set_x.get_value(borrow=True).shape[0] // batch_size
 
     print('... building model')
