@@ -14,14 +14,14 @@ from PIL import Image
 
 def load():
     species_list = [
-        'tilia_americana',
-        'tsuga_canadensis',
+        'acer_rubrum',
+        'broussonettia_papyrifera',
         'ulmus_rubra'
         # 'test1',
         # 'test2',
         # 'test3'
     ]
-    STANDARD_SIZE = (28, 28)
+    STANDARD_SIZE = (56, 56)
 
     def load_leaf_train(species, tag):
         path = os.path.join(
@@ -33,6 +33,7 @@ def load():
             'lab',
             species
         )
+        print(path)
 
 
         directory = os.listdir(path)
@@ -61,6 +62,7 @@ def load():
             'field',
             species
         )
+        print(path)
 
         directory = os.listdir(path)
         images = []
@@ -93,6 +95,7 @@ def load():
             'field',
             species
         )
+        print(path)
 
         directory = os.listdir(path)
         images = []
@@ -169,7 +172,7 @@ def load():
     test_x, test_y = shared_dataset(xy_test)
     valid_x, valid_y = shared_dataset(xy_valid)
 
-    rval = [(train_x, train_y), (test_x, test_y), (valid_x, valid_y)]
+    rval = [(train_x, train_y), (valid_x, valid_y), (test_x, test_y)]
 
     return rval
 

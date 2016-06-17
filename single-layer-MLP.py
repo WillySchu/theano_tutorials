@@ -18,7 +18,6 @@ class HiddenLayer(object):
 
         self.input = input
 
-
         if W is None:
             W_values = numpy.asarray(
                 rng.uniform(
@@ -118,7 +117,7 @@ def test_mlp(
     classifier = MLP(
         rng=rng,
         input=x,
-        n_in=28 * 28,
+        n_in=56 * 56,
         n_hidden=n_hidden,
         n_out=3
     )
@@ -186,12 +185,14 @@ def test_mlp(
             iter = (epoch - 1) * n_train_batches + minibatch_index
 
             if (iter + 1) % validation_frequency == 0:
-                print('hey')
-                print(validate_model(0))
                 validation_losses = [validate_model(i) for i
                     in range(n_valid_batches)]
-                print(validation_losses)
                 this_validation_loss = numpy.mean(validation_losses)
+
+                print(classifier.logRegLayer.W.get_value())
+                print(classifier.logRegLayer.b.get_value())
+                print(classifier.hiddenLayer.W.get_value())
+                print(classifier.hiddenLayer.b.get_value())
 
                 print(
                     'epoch %i, minibatch %i/%i, validation error %f %%' %
