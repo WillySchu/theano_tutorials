@@ -84,6 +84,8 @@ def load_data(dataset):
 
     def shared_dataset(data_xy, borrow=True):
         data_x, data_y = data_xy
+        print(type(data_x))
+        print(type(data_y))
         shared_x = theano.shared(numpy.asarray(data_x,
                 dtype=theano.config.floatX
             ),

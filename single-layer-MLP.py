@@ -10,6 +10,7 @@ import theano.tensor as T
 import numpy
 
 from logReg2 import LogReg, load_data
+from load_leaves import load
 
 class HiddenLayer(object):
     def __init__(self, rng, input, n_in, n_out, W=None, b=None, activation=T.tanh):
@@ -93,9 +94,11 @@ def test_mlp(
     batch_size=20,
     n_hidden=500):
 
-    datasets = load_data(dataset)
+    datasets = load()
 
     train_set_x, train_set_y = datasets[0]
+    print(train_set_x)
+    print(train_set_y)
     valid_set_x, valid_set_y = datasets[1]
     test_set_x, test_set_y = datasets[2]
 
