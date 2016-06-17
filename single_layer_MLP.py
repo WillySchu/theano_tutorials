@@ -85,12 +85,12 @@ class MLP(object):
 
 
 def test_mlp(
-    learning_rate=1,
+    learning_rate=0.01,
     L1_reg=0.0,
     L2_reg=0.0001,
     n_epochs=100,
     dataset='mnist.pkl.gz',
-    batch_size=20,
+    batch_size=10,
     n_hidden=500):
 
     datasets = load()
@@ -100,7 +100,6 @@ def test_mlp(
     test_set_x, test_set_y = datasets[2]
 
     n_train_batches = train_set_x.get_value(borrow=True).shape[0] // batch_size
-    print(n_train_batches)
     n_valid_batches = valid_set_x.get_value(borrow=True).shape[0] // batch_size
     n_test_batches = test_set_x.get_value(borrow=True).shape[0] // batch_size
 
@@ -116,7 +115,7 @@ def test_mlp(
     classifier = MLP(
         rng=rng,
         input=x,
-        n_in=56 * 56,
+        n_in=28 * 28,
         n_hidden=n_hidden,
         n_out=3
     )
@@ -187,11 +186,6 @@ def test_mlp(
                 validation_losses = [validate_model(i) for i
                     in range(n_valid_batches)]
                 this_validation_loss = numpy.mean(validation_losses)
-
-                print(classifier.logRegLayer.W.get_value())
-                print(classifier.logRegLayer.b.get_value())
-                print(classifier.hiddenLayer.W.get_value())
-                print(classifier.hiddenLayer.b.get_value())
 
                 print(
                     'epoch %i, minibatch %i/%i, validation error %f %%' %

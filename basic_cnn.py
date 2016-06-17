@@ -38,8 +38,6 @@ img = numpy.asarray(img, dtype='float64') / 256.
 img_ = img.transpose(2, 0, 1).reshape(1, 3, 639, 516)
 filtered_img = f(img_)
 
-print(pylab)
-
 pylab.subplot(1, 3, 1); pylab.axis('off'); pylab.imshow(img)
 pylab.gray();
 

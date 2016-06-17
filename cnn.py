@@ -56,20 +56,22 @@ class ConvPoolLayer(object):
 
         self.input = input
 
-def fuckoff(learning_rate=0.1,
-    n_epochs=5,
+def fuckoff(learning_rate=0.01,
+    n_epochs=10,
     dataset='mnist.pkl.gz',
     nkerns=[20, 50],
-    batch_size=1):
+    batch_size=20,
+    image_size=128):
 
     datasets = load()
 
     train_set_x, train_set_y = datasets[0]
+    print(train_set_x)
+    print(train_set_y)
     valid_set_x, valid_set_y = datasets[1]
     test_set_x, test_set_y = datasets[2]
 
     n_train_batches = train_set_x.get_value(borrow=True).shape[0] // batch_size
-    print(n_train_batches)
     n_valid_batches = valid_set_x.get_value(borrow=True).shape[0] // batch_size
     n_test_batches = test_set_x.get_value(borrow=True).shape[0] // batch_size
 
@@ -80,40 +82,43 @@ def fuckoff(learning_rate=0.1,
     x = T.matrix('x')
     y = T.ivector('y')
 
-    rng = numpy.random.RandomState(1234)
+    rng = numpy.random.RandomState(123455)
 
-    layer0_input = x.reshape((batch_size, 1, 28, 28))
+    layer0_input = x.reshape((batch_size, 1, image_size, image_size))
 
     layer0 = ConvPoolLayer(
         rng,
         input=layer0_input,
-        image_shape=(batch_size, 1, 28, 28),
+        image_shape=(batch_size, 1, image_size, image_size),
         filter_shape=(nkerns[0], 1, 5, 5),
         poolsize=(2, 2)
     )
 
+    image_size_1 = (image_size - 4) / 2
+
     layer1 = ConvPoolLayer(
         rng,
         input=layer0.output,
-        image_shape=(batch_size, nkerns[0], 12, 12),
+        image_shape=(batch_size, nkerns[0], image_size_1, image_size_1),
         filter_shape=(nkerns[1], nkerns[0], 5, 5),
         poolsize=(2, 2)
     )
 
+    image_size_2 = (image_size_1 - 4) / 2
     layer2_input = layer1.output.flatten(2)
 
     layer2 = HiddenLayer(
         rng,
         input=layer2_input,
-        n_in=nkerns[1] * 4 * 4,
-        n_out=500,
+        n_in=nkerns[1] * image_size_2 * image_size_2,
+        n_out=1000,
         activation=T.tanh
     )
 
     layer3 = LogReg(
         input=layer2.output,
-        n_in=500,
-        n_out=10
+        n_in=1000,
+        n_out=3
     )
 
     cost = layer3.negative_log_likelihood(y)
@@ -159,7 +164,7 @@ def fuckoff(learning_rate=0.1,
 
     print('... training')
 
-    patience = 10000
+    patience = 1000
     patience_increase = 2
     improvement_threshold = 0.995
     validation_frequency = min(n_train_batches, patience // 2)
@@ -179,11 +184,8 @@ def fuckoff(learning_rate=0.1,
             iter = (epoch - 1) * n_train_batches + minibatch_index
 
             if (iter + 1) % validation_frequency == 0:
-                print(n_valid_batches)
-                print(validate_model(0))
                 validation_losses = [validate_model(i) for i
                     in range(n_valid_batches)]
-                print(validation_losses)
                 this_validation_loss = numpy.mean(validation_losses)
 
                 print(

@@ -16,13 +16,13 @@ from PIL import Image
 def load():
     species_list = [
         'acer_rubrum',
-        'broussonettia_papyrifera',
+        'ptelea_trifoliata',
         'ulmus_rubra'
         # 'test1',
         # 'test2',
         # 'test3'
     ]
-    STANDARD_SIZE = (28, 28)
+    STANDARD_SIZE = (128, 128)
 
     def load_leaf_train(species, tag):
         path = os.path.join(
@@ -39,19 +39,17 @@ def load():
 
         directory = os.listdir(path)
         images = []
-        labels = []
         for file in directory:
             if file != '.DS_Store':
                 img = Image.open(path + '/' + file).convert('L')
+                img = img.crop((150, 150, img.size[0] - 150, img.size[1] - 150))
                 img = img.resize(STANDARD_SIZE)
                 img = list(img.getdata())
                 # img = map(list, img)
                 img = numpy.array(img)
-                images.append(img)
-                labels.append(tag)
+                images.append((img, tag))
 
-
-        return [images, labels]
+        return images
 
     def load_leaf_test(species, tag):
         path = os.path.join(
@@ -67,7 +65,6 @@ def load():
 
         directory = os.listdir(path)
         images = []
-        labels = []
 
         i = 0
 
@@ -76,15 +73,14 @@ def load():
             if file != '.DS_Store':
                 if len(directory) // 2 > i:
                     img = Image.open(path + '/' + file).convert('L')
+                    img = img.crop((150, 150, img.size[0] - 150, img.size[1] - 150))
                     img = img.resize(STANDARD_SIZE)
                     img = list(img.getdata())
                     # img = map(list, img)
                     img = numpy.array(img)
-                    images.append(img)
-                    labels.append(tag)
+                    images.append((img, tag))
 
-
-        return [images, labels]
+        return images
 
     def load_leaf_valid(species, tag):
         path = os.path.join(
@@ -100,7 +96,6 @@ def load():
 
         directory = os.listdir(path)
         images = []
-        labels = []
 
         i = 0
 
@@ -109,19 +104,21 @@ def load():
             if file != '.DS_Store':
                 if len(directory) // 2 < i:
                     img = Image.open(path + '/' + file).convert('L')
+                    img = img.crop((150, 150, img.size[0] - 150, img.size[1] - 150))
                     img = img.resize(STANDARD_SIZE)
                     img = list(img.getdata())
                     # img = map(list, img)
                     img = numpy.array(img)
-                    images.append(img)
-                    labels.append(tag)
+                    images.append((img, tag))
 
-        return [images, labels]
+        return images
 
     def shared_dataset(data_xy, borrow=True):
-        data_x, data_y = data_xy
-        print(data_x.shape)
-        print(data_y.shape)
+        data_x, data_y = zip(*data_xy)
+        data_x = list(data_x)
+        data_x = numpy.asarray(data_x)
+        data_y = list(data_y)
+        data_y = numpy.asarray(data_y)
 
         shared_x = theano.shared(numpy.asarray(data_x,
                 dtype=theano.config.floatX
@@ -136,43 +133,32 @@ def load():
 
         return shared_x, T.cast(shared_y, 'int32')
 
-    images_train = []
-    labels_train = []
-    images_test = []
-    labels_test = []
-    images_valid = []
-    labels_valid = []
+    train = []
+    valid = []
+    test = []
+
     tag = 0
     for species in species_list:
         print('... loading %s, as %i' % (species, tag))
-        x_train, y_train = load_leaf_train(species, tag)
-        x_valid, y_valid = load_leaf_valid(species, tag)
-        x_test, y_test = load_leaf_test(species, tag)
-
-        images_train += x_train
-        labels_train += y_train
-        images_test += x_test
-        labels_test += y_test
-        images_valid += x_valid
-        labels_valid += y_valid
+        train += load_leaf_train(species, tag)
+        valid += load_leaf_valid(species, tag)
+        test += load_leaf_test(species, tag)
 
         tag += 1
 
+    train = numpy.asarray(train)
+    valid = numpy.asarray(valid)
+    test = numpy.asarray(test)
 
-    images_train = numpy.asarray(images_train)
-    labels_train = numpy.asarray(labels_train)
-    images_test = numpy.asarray(images_test)
-    labels_test = numpy.asarray(labels_test)
-    images_valid = numpy.asarray(images_valid)
-    labels_valid = numpy.asarray(labels_valid)
+    numpy.random.shuffle(train)
 
-    xy_test = [images_test, labels_test]
-    xy_train = [images_train, labels_train]
-    xy_valid = [images_valid, labels_valid]
+    numpy.random.shuffle(valid)
 
-    train_x, train_y = shared_dataset(xy_train)
-    test_x, test_y = shared_dataset(xy_test)
-    valid_x, valid_y = shared_dataset(xy_valid)
+    numpy.random.shuffle(test)
+
+    train_x, train_y = shared_dataset(train)
+    test_x, test_y = shared_dataset(test)
+    valid_x, valid_y = shared_dataset(valid)
 
     rval = [(train_x, train_y), (valid_x, valid_y), (test_x, test_y)]
 
