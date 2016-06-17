@@ -56,7 +56,7 @@ class ConvPoolLayer(object):
 
         self.input = input
 
-def fuckoff(learning_rate=0.01,
+def train(learning_rate=0.01,
     n_epochs=10,
     dataset='mnist.pkl.gz',
     nkerns=[20, 50],
@@ -229,4 +229,4 @@ def fuckoff(learning_rate=0.01,
         ' ran for %.2fm' % ((end_time - start_time) / 60.)), file=sys.stderr)
 
 if __name__=='__main__':
-    fuckoff()
+    train()
