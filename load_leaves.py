@@ -12,6 +12,7 @@ import theano.tensor as T
 
 from PIL import Image
 
+
 def load():
     species_list = [
         'acer_rubrum',
@@ -157,6 +158,7 @@ def load():
 
         tag += 1
 
+
     images_train = numpy.asarray(images_train)
     labels_train = numpy.asarray(labels_train)
     images_test = numpy.asarray(images_test)
@@ -206,7 +208,7 @@ def load_mnist(dataset='mnist.pkl.gz'):
     def shared_dataset(data_xy, borrow=True):
         data_x, data_y = data_xy
         print(data_x.shape)
-        print(data_x[0].shape)
+        print(data_y.shape)
 
         shared_x = theano.shared(numpy.asarray(data_x,
                 dtype=theano.config.floatX

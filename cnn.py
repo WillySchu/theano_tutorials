@@ -13,6 +13,7 @@ import numpy
 
 from logReg2 import LogReg, load_data
 from single_layer_MLP import HiddenLayer
+from load_leaves import load
 
 class ConvPoolLayer(object):
     def __init__(self, rng, input, filter_shape, image_shape, poolsize=(2, 2)):
@@ -59,9 +60,9 @@ def fuckoff(learning_rate=0.1,
     n_epochs=5,
     dataset='mnist.pkl.gz',
     nkerns=[20, 50],
-    batch_size=500):
+    batch_size=1):
 
-    datasets = load_data(dataset)
+    datasets = load()
 
     train_set_x, train_set_y = datasets[0]
     valid_set_x, valid_set_y = datasets[1]
@@ -178,8 +179,11 @@ def fuckoff(learning_rate=0.1,
             iter = (epoch - 1) * n_train_batches + minibatch_index
 
             if (iter + 1) % validation_frequency == 0:
+                print(n_valid_batches)
+                print(validate_model(0))
                 validation_losses = [validate_model(i) for i
                     in range(n_valid_batches)]
+                print(validation_losses)
                 this_validation_loss = numpy.mean(validation_losses)
 
                 print(
