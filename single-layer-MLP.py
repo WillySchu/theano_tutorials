@@ -6,6 +6,7 @@ import timeit
 
 import theano
 import theano.tensor as T
+from theano import pp
 
 import numpy
 
@@ -86,10 +87,10 @@ class MLP(object):
 
 
 def test_mlp(
-    learning_rate=0.01,
+    learning_rate=1,
     L1_reg=0.0,
     L2_reg=0.0001,
-    n_epochs=1000,
+    n_epochs=100,
     dataset='mnist.pkl.gz',
     batch_size=20,
     n_hidden=500):
@@ -97,13 +98,12 @@ def test_mlp(
     datasets = load()
 
     train_set_x, train_set_y = datasets[0]
-    print(train_set_x)
-    print(train_set_y)
     valid_set_x, valid_set_y = datasets[1]
     test_set_x, test_set_y = datasets[2]
 
     n_train_batches = train_set_x.get_value(borrow=True).shape[0] // batch_size
     n_valid_batches = valid_set_x.get_value(borrow=True).shape[0] // batch_size
+    print(n_valid_batches)
     n_test_batches = test_set_x.get_value(borrow=True).shape[0] // batch_size
 
     print('... building model')
@@ -120,7 +120,7 @@ def test_mlp(
         input=x,
         n_in=28 * 28,
         n_hidden=n_hidden,
-        n_out=10
+        n_out=3
     )
 
     cost = (
@@ -146,7 +146,6 @@ def test_mlp(
             y: valid_set_y[index * batch_size:(index + 1) * batch_size]
         }
     )
-
 
     gparams = [T.grad(cost, param) for param in classifier.params]
 
@@ -187,8 +186,11 @@ def test_mlp(
             iter = (epoch - 1) * n_train_batches + minibatch_index
 
             if (iter + 1) % validation_frequency == 0:
+                print('hey')
+                print(validate_model(0))
                 validation_losses = [validate_model(i) for i
                     in range(n_valid_batches)]
+                print(validation_losses)
                 this_validation_loss = numpy.mean(validation_losses)
 
                 print(

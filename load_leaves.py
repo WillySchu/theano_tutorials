@@ -14,13 +14,16 @@ from PIL import Image
 
 def load():
     species_list = [
-        'test1',
-        'test2',
-        'test3'
+        'tilia_americana',
+        'tsuga_canadensis',
+        'ulmus_rubra'
+        # 'test1',
+        # 'test2',
+        # 'test3'
     ]
     STANDARD_SIZE = (28, 28)
 
-    def load_leaf_train(species):
+    def load_leaf_train(species, tag):
         path = os.path.join(
             os.path.split(__file__)[0],
             'data',
@@ -43,12 +46,12 @@ def load():
                 # img = map(list, img)
                 img = numpy.array(img)
                 images.append(img)
-                labels.append(0)
+                labels.append(tag)
 
 
         return [images, labels]
 
-    def load_leaf_test(species):
+    def load_leaf_test(species, tag):
         path = os.path.join(
             os.path.split(__file__)[0],
             'data',
@@ -70,18 +73,17 @@ def load():
             if file != '.DS_Store':
                 if len(directory) // 2 > i:
                     img = Image.open(path + '/' + file).convert('L')
-                    # img = img.resize(STANDARD_SIZE)
+                    img = img.resize(STANDARD_SIZE)
                     img = list(img.getdata())
                     # img = map(list, img)
                     img = numpy.array(img)
                     images.append(img)
-                    labels.append(0)
+                    labels.append(tag)
 
 
         return [images, labels]
 
-
-    def load_leaf_valid(species):
+    def load_leaf_valid(species, tag):
         path = os.path.join(
             os.path.split(__file__)[0],
             'data',
@@ -108,7 +110,7 @@ def load():
                     # img = map(list, img)
                     img = numpy.array(img)
                     images.append(img)
-                    labels.append(0)
+                    labels.append(tag)
 
         return [images, labels]
 
@@ -136,11 +138,12 @@ def load():
     labels_test = []
     images_valid = []
     labels_valid = []
+    tag = 0
     for species in species_list:
-        print('... loading %s' % species)
-        x_train, y_train = load_leaf_train(species)
-        x_valid, y_valid = load_leaf_valid(species)
-        x_test, y_test = load_leaf_test(species)
+        print('... loading %s, as %i' % (species, tag))
+        x_train, y_train = load_leaf_train(species, tag)
+        x_valid, y_valid = load_leaf_valid(species, tag)
+        x_test, y_test = load_leaf_test(species, tag)
 
         images_train += x_train
         labels_train += y_train
@@ -148,6 +151,8 @@ def load():
         labels_test += y_test
         images_valid += x_valid
         labels_valid += y_valid
+
+        tag += 1
 
     images_train = numpy.asarray(images_train)
     labels_train = numpy.asarray(labels_train)
@@ -167,10 +172,6 @@ def load():
     rval = [(train_x, train_y), (test_x, test_y), (valid_x, valid_y)]
 
     return rval
-
-
-
-
 
 def load_mnist(dataset='mnist.pkl.gz'):
     data_dir, data_file = os.path.split(dataset)

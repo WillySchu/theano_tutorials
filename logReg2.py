@@ -45,12 +45,15 @@ class LogReg(object):
         return -T.mean(T.log(self.p_y_given_x)[T.arange(y.shape[0]), y])
 
     def errors(self, y):
+        print('errors')
         if y.ndim != self.y_pred.ndim:
             raise TypeError(
                 'y should have the same shape as self.y_pred',
                 ('y', y.type, 'y_pred', self.y_pred.type)
             )
         if y.dtype.startswith('int'):
+            print(y.shape)
+            print(self.y_pred.shape)
             return T.mean(T.neq(self.y_pred, y))
         else:
             raise NotImplementedError()
