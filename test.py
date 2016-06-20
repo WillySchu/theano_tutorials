@@ -40,7 +40,6 @@ def crop(species):
         'lab',
         species
     )
-    print(path)
     i = 0
     directory = os.listdir(path)
     for file in directory:

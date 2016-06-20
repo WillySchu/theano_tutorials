@@ -115,7 +115,7 @@ def test_mlp(
     classifier = MLP(
         rng=rng,
         input=x,
-        n_in=28 * 28,
+        n_in=128 * 128,
         n_hidden=n_hidden,
         n_out=3
     )
@@ -180,6 +180,7 @@ def test_mlp(
         for minibatch_index in range(n_train_batches):
 
             minibatch_avg_cost = train_model(minibatch_index)
+            print(minibatch_avg_cost)
             iter = (epoch - 1) * n_train_batches + minibatch_index
 
             if (iter + 1) % validation_frequency == 0:

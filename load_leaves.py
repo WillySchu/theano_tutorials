@@ -34,7 +34,6 @@ def load():
             'lab',
             species
         )
-        print(path)
 
 
         directory = os.listdir(path)
@@ -47,7 +46,6 @@ def load():
                 img2 = img.transpose(Image.FLIP_LEFT_RIGHT)
                 img2 = list(img2.getdata())
                 img = list(img.getdata())
-                # img = map(list, img)
                 img = numpy.array(img)
                 img2 = numpy.array(img2)
                 images.append((img, tag))
@@ -65,7 +63,6 @@ def load():
             'field',
             species
         )
-        print(path)
 
         directory = os.listdir(path)
         images = []
@@ -80,7 +77,6 @@ def load():
                     img = img.crop((150, 150, img.size[0] - 150, img.size[1] - 150))
                     img = img.resize(STANDARD_SIZE)
                     img = list(img.getdata())
-                    # img = map(list, img)
                     img = numpy.array(img)
                     images.append((img, tag))
 
@@ -96,7 +92,6 @@ def load():
             'field',
             species
         )
-        print(path)
 
         directory = os.listdir(path)
         images = []
@@ -111,7 +106,6 @@ def load():
                     img = img.crop((150, 150, img.size[0] - 150, img.size[1] - 150))
                     img = img.resize(STANDARD_SIZE)
                     img = list(img.getdata())
-                    # img = map(list, img)
                     img = numpy.array(img)
                     images.append((img, tag))
 
@@ -191,7 +185,6 @@ def load_diff():
             'lab',
             species
         )
-        print(path)
 
         i = 1
         directory = os.listdir(path)
@@ -204,7 +197,6 @@ def load_diff():
                     img = img.crop((150, 150, img.size[0] - 150, img.size[1] - 150))
                     img = img.resize(STANDARD_SIZE)
                     img = list(img.getdata())
-                    # img = map(list, img)
                     img = numpy.array(img)
                     images.append((img, tag))
 
@@ -220,7 +212,6 @@ def load_diff():
             'lab',
             species
         )
-        print(path)
 
         directory = os.listdir(path)
         images = []
@@ -235,7 +226,6 @@ def load_diff():
                     img = img.crop((150, 150, img.size[0] - 150, img.size[1] - 150))
                     img = img.resize(STANDARD_SIZE)
                     img = list(img.getdata())
-                    # img = map(list, img)
                     img = numpy.array(img)
                     images.append((img, tag))
 
@@ -251,7 +241,6 @@ def load_diff():
             'lab',
             species
         )
-        print(path)
 
         directory = os.listdir(path)
         images = []
@@ -266,7 +255,6 @@ def load_diff():
                     img = img.crop((150, 150, img.size[0] - 150, img.size[1] - 150))
                     img = img.resize(STANDARD_SIZE)
                     img = list(img.getdata())
-                    # img = map(list, img)
                     img = numpy.array(img)
                     images.append((img, tag))
 
