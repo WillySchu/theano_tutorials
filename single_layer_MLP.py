@@ -83,7 +83,6 @@ class MLP(object):
 
         self.input = input
 
-
 def test_mlp(
     learning_rate=0.01,
     L1_reg=0.0,
